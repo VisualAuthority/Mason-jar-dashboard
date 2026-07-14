@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mason Jar Gummy Co. — Content Calendar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: #101317; overflow-x: hidden; }
+  button { font-family: inherit; cursor: pointer; touch-action: manipulation; }
+  input, select, textarea { font-family: inherit; }
+  ::selection { background: #E8432F33; }
+
+  .page {
+    font-family: 'Inter', sans-serif;
+    background: #101317;
+    min-height: 100vh;
+    color: #E7E9EC;
+    display: flex;
+    flex-direction: column;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .header {
+    padding: 20px 20px 14px;
+    border-bottom: 1px solid #23272C;
+    background: linear-gradient(180deg, #16191D 0%, #101317 100%);
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 1.2px;
+    color: #8A9099;
+    margin-bottom: 4px;
+  }
+  .title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: #F3F4F6;
+    text-transform: uppercase;
+  }
+  .rec-light {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; color: #E8432F; letter-spacing: 1px;
+    padding-top: 4px;
+  }
+  .rec-dot { width: 7px; height: 7px; border-radius: 50%; background: #E8432F; box-shadow: 0 0 8px 2px rgba(232,67,47,0.6); }
+  .header-row { display: flex; justify-content: flex-end; align-items: center; margin-top: 16px; gap: 10px; }
+  .month-nav { display: flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; }
+  .nav-btn { background: #1B1F24; border: 1px solid #2A2E33; border-radius: 5px; color: #B8BDC4; padding: 5px 9px; }
+  .month-label { font-size: 12.5px; color: #C7CBD1; min-width: 108px; text-align: center; display: inline-block; }
+
+  .summary-strip { display: flex; gap: 8px; padding: 12px 20px; overflow-x: auto; border-bottom: 1px solid #1C2025; }
+  .summary-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: #16191D; border: 1px solid #2A2E33; border-radius: 20px;
+    padding: 6px 10px; white-space: nowrap; flex-shrink: 0;
+  }
+  .summary-chip.active { border-color: var(--c); }
+  .summary-chip.dim { opacity: 0.45; }
+  .summary-label { font-size: 11.5px; color: #B8BDC4; }
+  .summary-count { font-size: 11.5px; color: #6B7280; font-family: 'JetBrains Mono', monospace; }
+  .clear-filter { background: transparent; border: none; color: #E8432F; font-size: 11.5px; padding: 6px 4px; flex-shrink: 0; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+  .bar-chart { padding: 16px 20px; border-bottom: 1px solid #1C2025; display: flex; flex-direction: column; gap: 10px; }
+  .bar-chart-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #6C6E78;
+    margin-bottom: 2px;
+  }
+  .bar-row { display: flex; align-items: center; gap: 10px; }
+  .bar-label { font-size: 12px; color: #B8BDC4; width: 108px; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 10px; background: #1B1F24; border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 6px; transition: width 0.3s ease; }
+  .bar-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #8A9099; width: 20px; text-align: right; flex-shrink: 0; }
+
+  .body { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .empty-state { text-align: center; padding: 48px 20px; color: #7A7F86; font-size: 13.5px; }
+  .empty-state .big { font-weight: 600; color: #DADDE1; margin-bottom: 4px; }
+  .list { display: flex; flex-direction: column; gap: 10px; }
+  .card { display: flex; gap: 12px; background: #15181C; border: 1px solid #22262B; border-radius: 10px; padding: 12px 14px; }
+  .card-date { font-family: 'JetBrains Mono', monospace; text-align: center; min-width: 44px; padding-right: 12px; border-right: 1px solid #22262B; }
+  .date-weekday { font-size: 10px; color: #6B7280; letter-spacing: 0.5px; }
+  .date-num { font-size: 13.5px; color: #DADDE1; font-weight: 500; margin-top: 2px; }
+  .card-main { flex: 1; min-width: 0; }
+  .card-top-row { display: flex; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+  .tag { font-size: 10.5px; background: #1E2A24; color: #6FB98A; padding: 2px 7px; border-radius: 4px; font-weight: 500; white-space: nowrap; }
+  .tag-alt { font-size: 10.5px; background: #20242A; color: #9AA3AD; padding: 2px 7px; border-radius: 4px; font-weight: 500; white-space: nowrap; }
+  .card-title { font-size: 14px; font-weight: 500; color: #F0F1F3; line-height: 1.35; }
+  .card-notes { font-size: 12.5px; color: #8A9099; margin-top: 4px; line-height: 1.4; }
+  .card-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; color: #6FA8E8; margin-top: 6px; text-decoration: none; }
+  .card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; justify-content: space-between; }
+
+  .status-pill { display: flex; align-items: center; gap: 5px; background: #1B1F24; border: 1px solid #2A2E33; border-radius: 20px; padding: 5px 9px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .status-wrap { position: relative; }
+  .status-dropdown { position: absolute; right: 0; top: 110%; background: #1B1F24; border: 1px solid #2A2E33; border-radius: 8px; padding: 4px; z-index: 10; min-width: 140px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); display: none; }
+  .status-dropdown.open { display: block; }
+  .status-option { display: flex; align-items: center; gap: 6px; width: 100%; background: transparent; border: none; color: #D7DADE; font-size: 12px; padding: 6px 8px; border-radius: 5px; text-align: left; }
+  .status-option:hover { background: #22262B; }
+  .delete-btn { background: transparent; border: none; color: #5A5F66; padding: 2px; }
+
+  .footer { padding: 14px 20px 24px; border-top: 1px solid #1C2025; }
+  .add-btn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; background: #E8432F; color: #fff; border: none; border-radius: 8px; padding: 12px; font-size: 13.5px; font-weight: 600; }
+  .form-card { background: #15181C; border: 1px solid #22262B; border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .form-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; font-size: 13px; font-weight: 600; }
+  .icon-btn { background: transparent; border: none; color: #8A9099; font-size: 16px; }
+  .field { background: #1B1F24; border: 1px solid #2A2E33; border-radius: 6px; color: #E7E9EC; padding: 11px 10px; font-size: 16px; width: 100%; }
+  .form-row { display: flex; gap: 8px; }
+  .form-actions { display: flex; gap: 8px; margin-top: 2px; }
+  .save-btn { background: #3F8F5F; color: #fff; border: none; border-radius: 6px; padding: 12px 16px; font-size: 14px; font-weight: 600; white-space: nowrap; min-height: 44px; }
+  .error-banner { background: #2A1B1B; color: #E8A398; font-size: 12.5px; padding: 8px 12px; border-radius: 6px; border: 1px solid #4A2A28; }
+
+  /* ---------- Mobile tuning ---------- */
+  @media (max-width: 480px) {
+    .header { padding: 16px 16px 12px; }
+    .title { font-size: 20px; }
+    .body { padding: 14px 16px; }
+    .summary-strip { padding: 10px 16px; }
+    .footer { padding: 12px 16px 20px; }
+    .bar-chart { padding: 14px 16px; }
+    .bar-label { width: 84px; font-size: 11px; }
+
+    /* Stack the date/platform/type row so nothing gets squeezed */
+    .form-row { flex-direction: column; }
+
+    /* Bigger, easier tap targets */
+    .nav-btn { padding: 8px 12px; min-height: 40px; min-width: 40px; }
+    .status-pill { padding: 8px 12px; min-height: 40px; }
+    .delete-btn { padding: 8px; min-width: 40px; min-height: 40px; display: flex; align-items: center; justify-content: center; }
+    .summary-chip { padding: 8px 12px; min-height: 36px; }
+    .add-btn { min-height: 48px; }
+    .icon-btn { padding: 8px; min-width: 40px; min-height: 40px; }
+
+    /* Cards: give the right-side controls a bit more breathing room */
+    .card { padding: 12px; }
+    .card-right { gap: 10px; }
+
+    /* Date moves above the content instead of squeezing it into a narrow
+       side column — notes/captions get the full card width to wrap in */
+    .card { flex-direction: column; gap: 8px; }
+    .card-date {
+      display: flex;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+      border-right: none;
+      border-bottom: 1px solid #22262B;
+      padding: 0 0 8px 0;
+      text-align: left;
+    }
+    .date-weekday { margin: 0; }
+    .date-num { margin: 0; }
+    .card-right {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #22262B;
+      padding-top: 8px;
+    }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+// ==================== CONFIG — paste your Supabase values ====================
+const CONFIG = {
+  SUPABASE_URL: "https://bceqcgflsbfqhbkvyxkm.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjZXFjZ2Zsc2JmcWhia3Z5eGttIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5MDI2ODYsImV4cCI6MjA5OTQ3ODY4Nn0.XKjxJqV3b2uEmuhQfz1z3P0CFdY0YAp-FDFQQsFeRDY",
+};
+const CLIENT_NAME = "Mason Jar Gummy Co.";
+// ================================================================================
+
+const STATUS = {
+  planned: { label: "Planned", color: "#9AA0A6" },
+  in_progress: { label: "In Review", color: "#E8432F" },
+  in_review: { label: "Ready to Publish", color: "#D9A441" },
+  delivered: { label: "Delivered", color: "#3F8F5F" },
+};
+const STATUS_ORDER = ["planned", "in_progress", "in_review", "delivered"];
+const PLATFORMS = ["Instagram", "TikTok", "YouTube", "LinkedIn", "Facebook", "Other"];
+const TYPES = ["Reel", "Static Post", "Carousel", "Story", "Script", "Ad Copy", "Long-form Video", "Other"];
+
+let entries = [];
+let loading = true;
+let error = null;
+let showForm = false;
+let statusFilter = "all";
+let openMenuId = null;
+let viewMonth = (() => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), 1); })();
+let form = emptyForm();
+
+function emptyForm() {
+  return { title: "", date: new Date().toISOString().slice(0,10), platform: PLATFORMS[0], type: TYPES[0], status: "planned", link: "", notes: "" };
+}
+
+const headers = {
+  "apikey": CONFIG.SUPABASE_ANON_KEY,
+  "Authorization": `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+  "Content-Type": "application/json",
+};
+
+async function loadEntries() {
+  loading = true; error = null; render();
+  try {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?select=*&order=date.desc`, { headers });
+    if (!res.ok) throw new Error("Failed to load (" + res.status + ")");
+    entries = await res.json();
+  } catch (e) {
+    error = e.message;
+    entries = [];
+  } finally {
+    loading = false; render();
+  }
+}
+
+async function addEntry() {
+  if (!form.title.trim()) return;
+  try {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries`, {
+      method: "POST",
+      headers: { ...headers, "Prefer": "return=representation" },
+      body: JSON.stringify([form]),
+    });
+    if (!res.ok) throw new Error("Couldn't save — try again.");
+    const [created] = await res.json();
+    entries = [...entries, created].sort((a,b) => b.date.localeCompare(a.date));
+    form = emptyForm();
+    showForm = false;
+  } catch (e) {
+    error = e.message;
+  }
+  render();
+}
+
+async function updateStatus(id, status) {
+  openMenuId = null;
+  const prev = entries;
+  entries = entries.map(e => e.id === id ? { ...e, status } : e);
+  render();
+  try {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?id=eq.${id}`, {
+      method: "PATCH", headers, body: JSON.stringify({ status }),
+    });
+    if (!res.ok) throw new Error();
+  } catch (e) {
+    entries = prev; error = "Couldn't save that change — try again."; render();
+  }
+}
+
+async function removeEntry(id) {
+  const prev = entries;
+  entries = entries.filter(e => e.id !== id);
+  render();
+  try {
+    const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/entries?id=eq.${id}`, { method: "DELETE", headers });
+    if (!res.ok) throw new Error();
+  } catch (e) {
+    entries = prev; error = "Couldn't delete — try again."; render();
+  }
+}
+
+function monthLabel(d) { return d.toLocaleDateString("en-US", { month: "long", year: "numeric" }); }
+function fmtDate(iso) { const d = new Date(iso + "T00:00:00"); return d.toLocaleDateString("en-US", { month: "short", day: "2-digit" }); }
+function weekdayOf(iso) { const d = new Date(iso + "T00:00:00"); return d.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(); }
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function getFiltered() {
+  const monthStart = viewMonth;
+  const monthEnd = new Date(viewMonth.getFullYear(), viewMonth.getMonth() + 1, 1);
+  return entries
+    .filter(e => { const d = new Date(e.date + "T00:00:00"); return d >= monthStart && d < monthEnd; })
+    .filter(e => statusFilter === "all" || e.status === statusFilter)
+    .sort((a,b) => b.date.localeCompare(a.date));
+}
+
+function getCounts() {
+  const c = { planned:0, in_progress:0, in_review:0, delivered:0 };
+  entries.forEach(e => {
+    const d = new Date(e.date + "T00:00:00");
+    if (d.getFullYear() === viewMonth.getFullYear() && d.getMonth() === viewMonth.getMonth()) {
+      c[e.status] = (c[e.status] || 0) + 1;
+    }
+  });
+  return c;
+}
+
+function render() {
+  const filtered = getFiltered();
+  const counts = getCounts();
+
+  document.getElementById("root").innerHTML = `
+    <div class="page">
+      <div class="header">
+        <div class="header-top">
+          <div>
+            <div class="eyebrow">VISUAL AUTHORITY — CLIENT REPORT</div>
+            <div class="title">${esc(CLIENT_NAME)}</div>
+          </div>
+          <div class="rec-light"><span class="rec-dot"></span>LIVE</div>
+        </div>
+        <div class="header-row">
+          <div class="month-nav">
+            <button class="nav-btn" data-action="prev-month">&#8592;</button>
+            <span class="month-label">${monthLabel(viewMonth)}</span>
+            <button class="nav-btn" data-action="next-month">&#8594;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-strip">
+        ${STATUS_ORDER.map(k => `
+          <button class="summary-chip ${statusFilter===k?'active':''} ${statusFilter!=='all'&&statusFilter!==k?'dim':''}"
+                  style="--c:${STATUS[k].color}" data-action="filter" data-key="${k}">
+            <span class="dot" style="background:${STATUS[k].color}"></span>
+            <span class="summary-label">${STATUS[k].label}</span>
+            <span class="summary-count">${counts[k]||0}</span>
+          </button>
+        `).join("")}
+        ${statusFilter !== "all" ? `<button class="clear-filter" data-action="clear-filter">Clear filter</button>` : ""}
+      </div>
+
+      <div class="bar-chart">
+        <div class="bar-chart-title">Status breakdown &middot; ${monthLabel(viewMonth)}</div>
+        ${STATUS_ORDER.map(k => {
+          const max = Math.max(1, ...STATUS_ORDER.map(s => counts[s] || 0));
+          const pct = Math.round(((counts[k] || 0) / max) * 100);
+          return `
+            <div class="bar-row">
+              <span class="bar-label">${STATUS[k].label}</span>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:${pct}%; background:${STATUS[k].color}"></div>
+              </div>
+              <span class="bar-count">${counts[k] || 0}</span>
+            </div>
+          `;
+        }).join("")}
+      </div>
+
+      <div class="body">
+        ${loading ? `<div class="empty-state">Loading calendar&hellip;</div>` :
+          filtered.length === 0 ? `
+            <div class="empty-state">
+              <div class="big">Nothing scheduled here yet</div>
+              <div>Add a deliverable below to start filling out ${monthLabel(viewMonth)}.</div>
+            </div>` :
+          `<div class="list">
+            ${filtered.map(entry => `
+              <div class="card">
+                <div class="card-date">
+                  <div class="date-weekday">${weekdayOf(entry.date)}</div>
+                  <div class="date-num">${fmtDate(entry.date)}</div>
+                </div>
+                <div class="card-main">
+                  <div class="card-top-row">
+                    <span class="tag">${esc(entry.platform||"")}</span>
+                    <span class="tag-alt">${esc(entry.type||"")}</span>
+                  </div>
+                  <div class="card-title">${esc(entry.title)}</div>
+                  ${entry.notes ? `<div class="card-notes">${esc(entry.notes)}</div>` : ""}
+                  ${entry.link ? `<a class="card-link" href="${esc(entry.link)}" target="_blank" rel="noopener noreferrer">&#128279; View asset</a>` : ""}
+                </div>
+                <div class="card-right">
+                  <div class="status-wrap">
+                    <button class="status-pill" style="color:${STATUS[entry.status].color}" data-action="toggle-menu" data-id="${entry.id}">
+                      <span class="dot" style="background:${STATUS[entry.status].color}"></span>${STATUS[entry.status].label}
+                    </button>
+                    <div class="status-dropdown ${openMenuId===entry.id?'open':''}">
+                      ${STATUS_ORDER.map(k => `
+                        <button class="status-option" data-action="set-status" data-id="${entry.id}" data-key="${k}">
+                          <span class="dot" style="background:${STATUS[k].color}"></span>${STATUS[k].label}
+                        </button>
+                      `).join("")}
+                    </div>
+                  </div>
+                  <button class="delete-btn" data-action="delete" data-id="${entry.id}">&#128465;</button>
+                </div>
+              </div>
+            `).join("")}
+          </div>`
+        }
+        ${error ? `<div class="error-banner">${esc(error)}</div>` : ""}
+      </div>
+
+      <div class="footer">
+        ${!showForm ? `<button class="add-btn" data-action="show-form">+ Add deliverable</button>` : `
+          <div class="form-card">
+            <div class="form-header">
+              <span>New deliverable</span>
+              <button class="icon-btn" data-action="hide-form">&times;</button>
+            </div>
+            <input class="field" id="f-title" placeholder="Title (e.g. Salon Spotlight — Nova)" value="${esc(form.title)}">
+            <div class="form-row">
+              <input class="field" id="f-date" type="date" value="${form.date}">
+              <select class="field" id="f-platform">${PLATFORMS.map(p=>`<option ${p===form.platform?'selected':''}>${p}</option>`).join("")}</select>
+              <select class="field" id="f-type">${TYPES.map(t=>`<option ${t===form.type?'selected':''}>${t}</option>`).join("")}</select>
+            </div>
+            <input class="field" id="f-link" placeholder="Asset link (optional)" value="${esc(form.link)}">
+            <textarea class="field" id="f-notes" placeholder="Notes (optional)" style="min-height:56px;resize:vertical">${esc(form.notes)}</textarea>
+            <div class="form-actions">
+              <select class="field" id="f-status">${STATUS_ORDER.map(k=>`<option value="${k}" ${k===form.status?'selected':''}>${STATUS[k].label}</option>`).join("")}</select>
+              <button class="save-btn" data-action="save">Save</button>
+            </div>
+          </div>
+        `}
+      </div>
+    </div>
+  `;
+
+  attachHandlers();
+}
+
+function attachHandlers() {
+  document.querySelectorAll("[data-action]").forEach(el => {
+    el.addEventListener("click", (ev) => {
+      const action = el.dataset.action;
+      const id = el.dataset.id;
+      const key = el.dataset.key;
+      if (action === "prev-month") { viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth()-1, 1); render(); }
+      else if (action === "next-month") { viewMonth = new Date(viewMonth.getFullYear(), viewMonth.getMonth()+1, 1); render(); }
+      else if (action === "filter") { statusFilter = statusFilter === key ? "all" : key; render(); }
+      else if (action === "clear-filter") { statusFilter = "all"; render(); }
+      else if (action === "show-form") { showForm = true; render(); }
+      else if (action === "hide-form") { showForm = false; render(); }
+      else if (action === "toggle-menu") { openMenuId = openMenuId === id ? null : id; render(); }
+      else if (action === "set-status") { updateStatus(id, key); }
+      else if (action === "delete") { removeEntry(id); }
+      else if (action === "save") {
+        form.title = document.getElementById("f-title").value;
+        form.date = document.getElementById("f-date").value;
+        form.platform = document.getElementById("f-platform").value;
+        form.type = document.getElementById("f-type").value;
+        form.link = document.getElementById("f-link").value;
+        form.notes = document.getElementById("f-notes").value;
+        form.status = document.getElementById("f-status").value;
+        addEntry();
+      }
+    });
+  });
+  // keep typed values in `form` as user types, so re-render doesn't drop them
+  ["f-title","f-date","f-platform","f-type","f-link","f-notes","f-status"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("input", () => {
+      const map = { "f-title":"title","f-date":"date","f-platform":"platform","f-type":"type","f-link":"link","f-notes":"notes","f-status":"status" };
+      form[map[id]] = el.value;
+    });
+  });
+}
+
+loadEntries();
+</script>
+</body>
+</html>
